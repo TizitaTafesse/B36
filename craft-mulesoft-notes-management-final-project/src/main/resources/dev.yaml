@@ -1,0 +1,24 @@
+#http:
+#  host: "localhost"
+#  port: "8081"
+#  resp:
+#    msg: "this is from development environment"
+#
+#db:
+#  host: "localhost"
+#  port: "3306"
+#  user: "root"
+#  password: "Root"
+#  databaseName: "Notes_Management"
+http:
+  host: "![eJ5ISnm4SpPesh3ZXPzTVQ==]"
+  port: "![+UfpGKAATQo=]"
+  resp:
+    msg: "![nAMhls/g0w/j6lKchFPf2ymyiR6wIPAGfTzUFrT+HirYCaUCk89n+g==]"
+
+db:
+  host: "![eJ5ISnm4SpPesh3ZXPzTVQ==]"
+  port: "![ilT/YjkwavE=]"
+  user: "![drRayEEeS8g=]"
+  password: "![NMn+E0BMyRI=]"
+  databaseName: "![HpSONjatZYfDAAaCXKpTS9GLu/ofQPs/]"

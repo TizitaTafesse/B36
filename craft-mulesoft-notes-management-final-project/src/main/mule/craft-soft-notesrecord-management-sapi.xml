@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+    <http:listener-config name="craft-soft-notesrecord-management-sapi-httpListenerConfig">
+        <http:listener-connection host="${secure::http.host}" port="${secure::http.port}" />
+    </http:listener-config>
+    <apikit:config name="craft-soft-notesrecord-management-sapi-config" api="resource::ae00d0e9-e369-40b7-994c-545d8476e2ff:craft-notes-management-final-project:1.0.0:raml:zip:craft-soft-notesrecord-management-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <configuration-properties doc:name="Configuration properties" doc:id="b2d170ab-6ce1-4548-ad03-da540fddba12" file="${env}.yaml" />
+	<global-property doc:name="Global Property" doc:id="0b2f8f50-24ba-4fc3-918b-d46e5f924e81" name="env" value="prod" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="f69a27f9-d174-4b92-a01b-ca28c38449a6" file="prod.yaml" key="craftProject4" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="a1a77c1e-1f25-43a2-94ed-1c4269d0a974" >
+		<db:my-sql-connection host="${secure::db.host}" port="${secure::db.port}" user="${secure::db.user}" password="${secure::db.password}" database="${secure::db.databaseName}"/>
+	</db:config>
+	<flow name="craft-soft-notesrecord-management-sapi-main">
+        <http:listener config-ref="craft-soft-notesrecord-management-sapi-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="craft-soft-notesrecord-management-sapi-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="craft-soft-notesrecord-management-sapi-console">
+        <http:listener config-ref="craft-soft-notesrecord-management-sapi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="craft-soft-notesrecord-management-sapi-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="put:\notes\(id):application\json:craft-soft-notesrecord-management-sapi-config">
+		<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	id:attributes.uriParams.id,&#10;	title:payload.title,&#10;	content:payload.content,&#10;	createdAt:now()&#10;	}]" doc:name="Set Variable" doc:id="133d2b24-736a-409c-a00f-666998df14d7" variableName="value"/>
+		<try doc:name="Try" doc:id="0e1219f3-5d13-46bc-99d5-7e2dd0ddb988" >
+			<db:select doc:name="checkifNoteExist" doc:id="ade53c70-2b3c-4a8e-90fb-1dddf6f99185" config-ref="Database_Config">
+			<db:sql><![CDATA[SELECT * FROM notes_Group_A WHERE id = :id]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	id:vars.value.id
+}]]]></db:input-parameters>
+		</db:select>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="42e2ab73-2357-4b4c-ac29-9d39baa15cd6" type="DB:CONNECTIVITY">
+					<ee:transform doc:name="Transform Message" doc:id="35889620-3e66-461e-8202-9319537c7db5" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"error msg":"database connectivity failed"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+        <choice doc:name="Choice" doc:id="136a2d5f-2e82-4464-b78d-f47be245e527" >
+			<when expression="#[sizeOf(payload)&gt;0]">
+				<db:update doc:name="Update" doc:id="b2f8dcb3-8527-411b-9713-00eb6a6853ce" config-ref="Database_Config">
+					<db:sql ><![CDATA[UPDATE notes_Group_A SET title= :title, content= :content, createdAt= :createdAt WHERE id= :id]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+    id: vars.value.id,
+    title:vars.value.title,
+    content:vars.value.content,
+    createdAt:vars.value.createdAt
+    
+    }]]]></db:input-parameters>
+				</db:update>
+				<ee:transform doc:name="Transform Message" doc:id="d64efd89-d4f8-43c5-b391-6a51fbf1dc60" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"msg":"Note updated successfully"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="c9e2144e-edfb-411a-b454-dbd3deb0bd3a" config-ref="Database_Config">
+					<db:sql ><![CDATA[INSERT INTO notes_Group_A(title, content, createdAt) VALUES (:title, :content, :createdAt)]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+    title: vars.value.title,
+    content: vars.value.content,
+    createdAt: vars.value.createdAt
+}]]]></db:input-parameters>
+				</db:insert>
+				<ee:transform doc:name="Transform Message" doc:id="5494ab11-9fd4-449b-bbf8-db58772e4143" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"msg":"note created successfully"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="delete:\notes\(id):craft-soft-notesrecord-management-sapi-config">
+        <try doc:name="Try" doc:id="8150ec00-a7db-4297-9908-3b6ff9be1374" >
+			<db:delete doc:name="Delete" doc:id="31e10415-f3dc-485b-9d28-ddb3e7c0c320" config-ref="Database_Config">
+			<db:sql><![CDATA[delete from notes_Group_A where id=:id]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+		id:attributes.uriParams.id
+	}]]]></db:input-parameters>
+		</db:delete>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c07d840c-eb58-4e0f-920f-d775b8bdc091" type="DB:CONNECTIVITY">
+					<ee:transform doc:name="Transform Message" doc:id="dc3e8d18-e0bc-4aae-bc2f-e35526026ccf" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"error msg":"database connectivity failed"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"msg":"note deleted successfully"
+  }
+  ]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\notes:craft-soft-notesrecord-management-sapi-config">
+		<try doc:name="Try" doc:id="957ebf2a-30b8-444a-b783-187a6aa45d9e" >
+			<db:select doc:name="Select" doc:id="905aabd0-4d0b-4dce-9c2c-bb8f6cec89fb" config-ref="Database_Config">
+			<db:sql><![CDATA[SELECT * FROM notes_Group_A]]></db:sql>
+		</db:select>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="3fa31aea-109c-4abf-befc-2fe6f1d1d366" type="DB:CONNECTIVITY">
+					<ee:transform doc:name="Transform Message" doc:id="bd8e115a-3347-434f-be19-de7562e3aa9c" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"error msg":"database connectivity failed"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\notes\(id):craft-soft-notesrecord-management-sapi-config">
+        <try doc:name="Try" doc:id="1ed36f9d-0ca2-48ca-829a-6e1ddfe65145" >
+			<db:select doc:name="Select" doc:id="76a8f8ab-1462-4762-a218-7e8f5a99f625" config-ref="Database_Config">
+			<db:sql><![CDATA[SELECT * FROM notes_Group_A where id=:id]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	"id":attributes.uriParams.id
+}]]]></db:input-parameters>
+		</db:select>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d3a9552a-4358-4980-a26e-0130e75441e6" type="DB:CONNECTIVITY">
+					<ee:transform doc:name="Transform Message" doc:id="fa00f8da-f04f-4ab6-93d5-05a5aa75adf8" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"error msg":"database connectivity failed"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="post:\notes:application\json:craft-soft-notesrecord-management-sapi-config">
+        <try doc:name="Try" doc:id="5184223a-d017-4afb-8f31-695b7df72123" >
+			<db:insert doc:name="Insert" doc:id="1773980a-f358-4589-8fb6-caa125ab2adc" config-ref="Database_Config">
+			<db:sql><![CDATA[insert into notes_Group_A(title,content,createdAt)values(:title,:content,:createdAt);]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	title:payload.title,
+	content:payload.content,
+	createdAt:now()
+	
+}]]]></db:input-parameters>
+		</db:insert>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="547fb621-eb9e-4748-a256-fb07fc9f12cd" type="DB:CONNECTIVITY">
+					<ee:transform doc:name="Transform Message" doc:id="bb2087cf-5e14-4332-b19a-fccc4ae84091" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"error msg":"database connectivity failed"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"msg":"note created succssfully"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+</mule>

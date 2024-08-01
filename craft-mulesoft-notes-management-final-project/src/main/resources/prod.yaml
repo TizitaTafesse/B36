@@ -1,0 +1,25 @@
+#http:
+#  host: "0.0.0.0"
+#  port: "8082"
+#  resp:
+#    msg: "this is from production environment"
+#
+#db:
+#  host: "b5wcm6cq7da9wfseksvw-mysql.services.clever-cloud.com"
+#  port: "3306"
+#  user: "ua7zitzvcbmtfily"
+#  password: "LMxBXsfyhDJWVRyEhkST"
+#  databaseName: "b5wcm6cq7da9wfseksvw"
+http:
+  host: "![W3jXdUUZsG8=]"
+  port: "![iwlnKDljS3s=]"
+  resp:
+    msg: "![Dgd76ZVcfjUHLq5b+nMQnbuBTduzFZX9KPV1nxgVuJ8rEiO3XwCFAA==]"
+
+db:
+  host: "![mJvxIi9sL7y4/zOZZqt7F/B7XRAjYYcxX/E4LJQaKWElFKu9b+4YyxcD+V4tweQRB5YNT6wmCnE=]"
+  port: "![r1gbmUOpqok=]"
+  user: "![m8VL9JBprQ9IdfMDKOhhLSMgLlbzRfcI]"
+  password: "![QwAtnThUDovYQENStr3Bm6XKr5OwY4H/]"
+  databaseName: "![mJvxIi9sL7y4/zOZZqt7F4c64V5qXAXr]"
+

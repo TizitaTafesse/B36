@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="craft-soft-notesrecord-management-sapi-test-suite.xml" />
+	<munit:test name="craft-soft-notesrecord-management-sapi-test-suite-get:\notes\(id):craft-soft-notesrecord-management-sapi-configTest" doc:id="f4fc957f-0c16-4032-9187-d092f26ca463" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\notes\(id):craft-soft-notesrecord-management-sapi-config" doc:id="670ab985-7cf1-4215-833a-badaf06437e4" name="get:\notes\(id):craft-soft-notesrecord-management-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="3c1d134b-9533-4fb4-b0be-9ed481ae957c" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="76a8f8ab-1462-4762-a218-7e8f5a99f625" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="craft-soft-notesrecord-management-sapi-test-suite-get:\notes:craft-soft-notesrecord-management-sapi-configTest" doc:id="4ee39579-36f0-48a6-babb-c9981156c51d" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\notes:craft-soft-notesrecord-management-sapi-config" doc:id="6976e1c2-dd89-4926-b640-4f86a5d84b0e" name="get:\notes:craft-soft-notesrecord-management-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="ce325868-ccd5-443c-980f-d45451411fb0" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="905aabd0-4d0b-4dce-9c2c-bb8f6cec89fb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="80f0c9ee-7a7c-4b4b-b715-1344575a5a8b" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="craft-soft-notesrecord-management-sapi-test-suite-delete:\notes\(id):craft-soft-notesrecord-management-sapi-configTest" doc:id="d88fbfa6-fe2b-4dda-bb9b-f6fee6cf538f" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to delete:\notes\(id):craft-soft-notesrecord-management-sapi-config" doc:id="e1e49ce9-59c2-4f50-af70-5e80b89c617b" name="delete:\notes\(id):craft-soft-notesrecord-management-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="d49d6cc7-395a-427d-b411-10b1fc00f42f" processor="db:delete">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="31e10415-f3dc-485b-9d28-ddb3e7c0c320" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="craft-soft-notesrecord-management-sapi-test-suite-post:\notes:application\json:craft-soft-notesrecord-management-sapi-configTest" doc:id="f36f9740-3d62-4e01-9221-9784f03dc947" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\notes:application\json:craft-soft-notesrecord-management-sapi-config" doc:id="176a5931-3292-46a3-b41a-d43b9e5ba2e7" name="post:\notes:application\json:craft-soft-notesrecord-management-sapi-config"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="8edef28f-edbe-40f7-807b-40fbc24fd45a" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c9e2144e-edfb-411a-b454-dbd3deb0bd3a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="craft-soft-notesrecord-management-sapi-test-suite-put:\notes\(id):application\json:craft-soft-notesrecord-management-sapi-configTest" doc:id="cf374202-7f53-4ff1-82a9-9aa1e8bcf7f9" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to put:\notes\(id):application\json:craft-soft-notesrecord-management-sapi-config" doc:id="c02a133f-d035-4c99-812b-6602d2330a60" name="put:\notes\(id):application\json:craft-soft-notesrecord-management-sapi-config"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="752efd24-d8ee-4071-b037-05f393e044f7" processor="set-variable">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="133d2b24-736a-409c-a00f-666998df14d7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="e82df1c2-a855-40f1-9a81-bc5882101759" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ade53c70-2b3c-4a8e-90fb-1dddf6f99185" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="6aff00ee-3f50-489d-9f86-c3c871f70b74" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="136a2d5f-2e82-4464-b78d-f47be245e527" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="3b23d1ef-9aef-4c3e-8783-2f3a74499a8c" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b2f8dcb3-8527-411b-9713-00eb6a6853ce" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="craft-soft-notesrecord-management-sapi-test-suite-craft-soft-notesrecord-management-sapi-mainTest" doc:id="f5351801-4680-4e64-a2c4-1ac191f40843" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to craft-soft-notesrecord-management-sapi-main" doc:id="889a6bde-f156-4df9-b95e-7030c90e089c" name="craft-soft-notesrecord-management-sapi-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="953bfc77-17cb-4d9b-b5f4-b0917f090ada" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="fd54d192-a78b-48c0-b0eb-056330e43799" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="craft-soft-notesrecord-management-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="craft-soft-notesrecord-management-sapi-test-suite-craft-soft-notesrecord-management-sapi-consoleTest" doc:id="d36349c2-241e-4793-ad1d-2aa5b40b8f86" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to craft-soft-notesrecord-management-sapi-console" doc:id="f18a9706-1115-42c8-98fa-9bd8a6198248" name="craft-soft-notesrecord-management-sapi-console"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="be653056-5975-4792-a815-6d68dbaa636e" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="craft-soft-notesrecord-management-sapi-httpListenerConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="04449245-8de2-4b05-99e8-47fbcfb8d89a" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="/console/*" attributeName="path" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="727ed94e-7d03-4e56-82a4-771c29583c1b" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="craft-soft-notesrecord-management-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

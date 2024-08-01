@@ -1,0 +1,159 @@
+#%RAML 1.0
+title: craft-final-project-papi-full
+description: this api is used for managing notes in the database
+baseUri: https://8081:localhost/craft-finalProject-papi
+version: v1.0
+types:
+  noteDatatype: !include DataType/notes.raml
+traits:
+  status_code: !include Traites/404traits.raml  
+  
+/notes:
+  get:
+    description: get all user notes
+    responses:
+      200:
+        body:
+          application/json:
+            type: noteDatatype[]
+            example: !include Examples/getall.json
+              
+                      
+      400:
+        body:
+          application/json:
+            example:
+              value:
+                {
+                  "message": "bad request"
+                }
+    is:
+      - status_code           
+  /{id}:
+    get:
+      description: Get notes by ID
+      responses:
+        200:
+          body:
+            application/json:
+              type: noteDatatype
+              example:  !include Examples/notes.json     
+        400:
+          body:
+            application/json:
+              example:
+                value:
+                  {
+                  "message": "bad request"
+                  }
+      is:
+        - status_code               
+    delete:
+      description: Deletes note by ID.
+      responses:
+        200:
+          description: Note deleted successfully
+          body:
+            application/json:
+              example:
+                value:
+                  {
+                  "message": "note deleted"
+                   }
+      is:
+      - status_code                                
+    put:
+      description: update notes by id
+      body:
+        application/json:
+          type: noteDatatype
+          example: !include Examples/notes.json 
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                value:
+                  {
+                    "message": "note updated successfully"
+                  }
+        201:
+          body:
+            application/json:
+              example:
+                value:
+                  {
+                    "message": "Notes Created "
+                   }                    
+  post:
+    description: create notes to the database
+    body:
+      application/json:
+        type: noteDatatype
+        example:  !include Examples/forpost.json  
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              value:
+                {
+                  "message": "Notes Created "
+                }
+
+      401:
+        body:
+          application/json:
+            example:
+              value:
+                {
+                  "message": "Un Authorized user"
+                }                 
+      500:
+        body:
+          application/json:
+            example:
+              value:
+                {
+                  "message": "Internal server Error"
+                }
+/zipcode/{zip}:
+  uriParameters:
+    zip:
+      type: string
+      description: The zip code to look up
+      required: true
+
+  get:
+    description: Retrieve details for a specific zip code
+    queryParameters:
+      content:
+        type: boolean
+        description: Optionally filter the response to return only the "current" object
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+           
+            example: |
+              {
+                "zip_code": "12345",
+                "city": "Sample City",
+                "state": "SC",
+                "current": {
+                  "population": 123456,
+                  "density": 1234.56
+                }
+              }
+
+  
+
+    
+
+      
+
+
+                                  
+
+
